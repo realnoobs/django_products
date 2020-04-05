@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n static products_tags %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <style></style>
+{% endblock %}
+
+{% block content %}
+  <h1>Tag: {{ tag.name }}</h1>
+  <div id="campaign-wrapper" class="pt-4 pb-4">
+    {% if tagged_products %}
+      {% for tagged_product in tagged_products %}
+        {% product_template tagged_product.content_object %}
+      {% endfor %}
+    {% else %}
+      <p class="row pl-2 pr-2">There are currently no blog posts</p>
+    {% endif %}
+  </div>
+{% endblock %}

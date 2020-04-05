@@ -1,0 +1,9 @@
+<ul class="nav flex-column nav-pills">
+  {% if categories %}
+    {% for category in categories %}
+      <li class="nav-item"><a class="nav-link" href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+    {% endfor %}
+  {% else %}
+    <li class="nav-item"><a class="nav-link disabled" href="#">No category</a></li>
+  {% endif %}
+</ul>

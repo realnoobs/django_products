@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load i18n static products_tags %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <style></style>
+{% endblock %}
+
+{% block content %}
+  <div id="index-sidebar">
+    {% category_panel %}
+  </div>
+  <div id="campaign-wrapper">
+    {% if object_list %}
+      {% for product in object_list %}
+        {% product_template product %}
+      {% endfor %}
+    {% else %}
+      <p class="row pl-2 pr-2">There are currently no blog posts</p>
+    {% endif %}
+  </div>
+{% endblock %}

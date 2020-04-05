@@ -1,0 +1,67 @@
+{% load i18n static thumbnail %}
+
+<div id="product-{{ product.id }}" class="product">
+  <div class="product-thumbnail">
+    <a href="{{ product.get_absolute_url }}">
+      <img src="{% thumbnail product.thumbnail 100x100 crop upscale %}" alt="{{ product.title }}">
+    </a>
+  </div>
+
+  <div class="product-control">
+    <ul>
+      <li>
+        <a href="#">
+          {% trans 'Add to Cart' %}
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          {% trans 'Checkout Now' %}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <h1 class="product-title">
+    <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+  </h1>
+
+  <div class="product-author">
+    <a href="">{{ product.owner.name }}</a>
+  </div>
+
+  <div class="product-body">
+    <strong>Summary:</strong>
+    {{ product.summary|safe }}
+  </div>
+
+  <div class="product-body">
+    <strong>Body:</strong>
+    {{ product.body|safe }}
+  </div>
+
+  <div class="product-meta">
+    <div class="product-category">
+      {% if product.category %}
+      <strong>Posted in:</strong>
+      <a href="{{ product.category.get_absolute_url }}">
+        {{ product.category.name }}
+      </a>
+      {% endif %}
+    </div>
+    <div class="product-tags">
+      {% if product.tags.all %}
+        <strong>Tags:</strong>
+        {% for tag in product.tags.all %}
+          <a href="{{ tag.get_absolute_url }}">
+            {{ tag.name }}
+          </a>
+          {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div><strong>Price:</strong> Rp. {{ product.price }}</div>
+
+</div>
