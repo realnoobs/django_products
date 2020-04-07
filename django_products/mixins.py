@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.utils import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import MinValueValidator
 from django.contrib.auth import get_user_model
 
 
@@ -55,23 +56,31 @@ class PostMixin(models.Model):
         editable=False)
 
 
-class InventoryMixin:
+class InventoryMixin(models.Model):
+    class Meta:
+        abstract = True
+
     sn = models.CharField(
         max_length=150,
+        null=True, blank=True,
         verbose_name=_("serial number"))
-    stock_on_hand = models.IntegerField(verbose_name=_("stock on hand"))
-    stock_on_delivery = models.IntegerField(verbose_name=_("stock on delivery"))
-    stock_on_request = models.IntegerField(verbose_name=_("stock on request"))
-    min_stock = models.IntegerField(verbose_name=_("min stock"))
-    max_stock = models.IntegerField(verbose_name=_("max stock"))
-    price = models.DecimalField(
-        decimal_places=2,
-        max_digits=15,
-        verbose_name=_("price"))
-    display_price = models.DecimalField(
-        decimal_places=2,
-        max_digits=15,
-        verbose_name=_("display price"))
+    stock_on_hand = models.IntegerField(
+        default=0,
+        verbose_name=_("stock on hand"))
+    stock_on_delivery = models.IntegerField(
+        default=0,
+        verbose_name=_("stock on delivery"))
+    stock_on_request = models.IntegerField(
+        default=0,
+        verbose_name=_("stock on request"))
+    min_stock = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(0)],
+        verbose_name=_("min stock"))
+    max_stock = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(0)],
+        verbose_name=_("max stock"))
 
     @cached_property
     def soh_value(self):

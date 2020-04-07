@@ -5,16 +5,15 @@ from django.db.utils import cached_property
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.utils import translation, timezone
-from django.shortcuts import reverse
+from django.core.validators import MinValueValidator
 
-from filer.fields.image import FilerImageField
 from taggit.models import TaggedItemBase, TagBase
 from taggit.managers import TaggableManager
 from mptt.models import MPTTModel, TreeForeignKey
 
 from polymorphic.models import PolymorphicModel, PolymorphicManager
 
-from django_products.utils import unique_slugify
+from .utils import unique_slugify
 
 _ = translation.gettext_lazy
 
@@ -50,10 +49,6 @@ class ProductAbstract(PolymorphicModel):
         editable=False,
         primary_key=True,
         verbose_name='uuid')
-    thumbnail = FilerImageField(
-        null=True, blank=True,
-        on_delete=models.SET_NULL,
-        related_name="product_thumbnails")
     title = models.CharField(
         verbose_name=_('title'),
         max_length=255,
@@ -62,6 +57,18 @@ class ProductAbstract(PolymorphicModel):
     draft_title = models.CharField(
         max_length=255,
         editable=False)
+    price = models.DecimalField(
+        default=0,
+        decimal_places=2,
+        max_digits=15,
+        validators=[MinValueValidator(0)],
+        verbose_name=_("price"))
+    display_price = models.DecimalField(
+        default=0,
+        decimal_places=2,
+        max_digits=15,
+        validators=[MinValueValidator(0)],
+        verbose_name=_("display price"))
     slug = models.SlugField(
         unique=True, null=True,
         blank=False, max_length=80)
@@ -144,7 +151,7 @@ class Category(MPTTModel):
         help_text=_(
             'Categories, unlike tags, can have a hierarchy. You might have a '
             'Jazz category, and under that have children categories for Bebop'
-            ' and Big Band. Totally optional.'),)
+            ' and Big Band. Totally optional.'), )
     description = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
